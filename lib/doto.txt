@@ -1,0 +1,6 @@
+1. registration screen and login screen
+2. Authentication Firebase
+3. Adding user info with Firestore
+4. Homepage UI
+5. add note UI
+6. Adding and updating with firestore

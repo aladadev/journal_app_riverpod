@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "884037350699",
+    "project_id": "journal-app-alada1",
+    "storage_bucket": "journal-app-alada1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:884037350699:android:943c80fa8a592836cbc16e",
+        "android_client_info": {
+          "package_name": "com.example.journal_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "884037350699-2coktr2j513l9jmhj17qtk0av1qdk76q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl_7G9gWw-wB_DlNmQSyiD2tg_5wF3s2Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "884037350699-2coktr2j513l9jmhj17qtk0av1qdk76q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

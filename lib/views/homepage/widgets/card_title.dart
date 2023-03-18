@@ -6,9 +6,11 @@ class CardTitle extends StatelessWidget {
     super.key,
     required this.title,
     required this.dateTime,
+    this.onDelete,
   });
   final String title;
   final DateTime dateTime;
+  final Function()? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class CardTitle extends StatelessWidget {
             ),
           ],
         ),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.menu_rounded)),
+        IconButton(onPressed: onDelete, icon: const Icon(Icons.delete)),
       ],
     );
   }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:journal_app/models/note_model.dart';
 import 'package:journal_app/providers/auth_provider.dart';
 import 'package:journal_app/providers/firestore_provider.dart';
 import 'package:journal_app/providers/note_provider.dart';
@@ -18,12 +16,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  addNewNote(NotelModel newNote) async {
-    EasyLoading.show(status: 'Saving New Note!');
-    await NoteProvider.addNewNote(newNote);
-    ref.invalidate(futureNoteProvider);
-  }
-
   @override
   Widget build(BuildContext context) {
     final notesList = ref.watch(futureNoteProvider);
@@ -53,10 +45,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             builder: (context) {
                               return const AddNewDialog();
                             },
-                          )).then((value) async {
-                            print(value);
-                            await addNewNote(value);
-                          });
+                          ));
                           // showDialog(
                           //   context: context,
                           //   builder: (context) {
@@ -88,6 +77,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             title: data[index].title,
                             dateTime: data[index].dateTime,
                             description: data[index].description,
+                            onDelete: () async {
+                              await NoteProvider.deleteNote(
+                                      data[index].noteDocID)
+                                  .then((value) =>
+                                      ref.invalidate(futureNoteProvider));
+                            },
                             onTap: () {
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {

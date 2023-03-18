@@ -8,11 +8,13 @@ class JournalCard extends StatelessWidget {
     required this.dateTime,
     required this.description,
     required this.onTap,
+    required this.onDelete,
   });
   final String title;
   final DateTime dateTime;
   final String description;
   final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,8 @@ class JournalCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CardTitle(title: title, dateTime: dateTime),
+                  CardTitle(
+                      title: title, dateTime: dateTime, onDelete: onDelete),
                   const SizedBox(
                     height: 10,
                   ),

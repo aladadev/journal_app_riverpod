@@ -11,9 +11,10 @@ final futureNoteProvider = FutureProvider<List<NotelModel>>((ref) async {
   final currentUser = FirebaseAuth.instance.currentUser;
 
   if (currentUser != null) {
-    final nestedNote = noteCollectionPath.doc(currentUser.uid);
-    final notesList =
-        await nestedNote.collection('allnotes').get().then((value) {
+    final notesList = await noteCollectionPath
+        .where('userID', isEqualTo: currentUser.uid)
+        .get()
+        .then((value) {
       return value.docs.map((e) => NotelModel.fromMap(e.data()));
     });
 
@@ -31,10 +32,26 @@ class NoteProvider {
     try {
       if (user != null) {
         EasyLoading.show(status: 'Saving note!');
-        await noteCollection
-            .doc(user.uid)
-            .collection('allnotes')
-            .add(newNote.toMap());
+        await noteCollection.doc(newNote.noteDocID).set(newNote.toMap());
+
+        EasyLoading.dismiss();
+        return true;
+      }
+    } catch (error) {
+      EasyLoading.showError(error.toString());
+      return false;
+    }
+    return false;
+  }
+
+  static Future<bool> deleteNote(String docID) async {
+    final noteCollection =
+        FirebaseFirestore.instance.collection(FireBaseConstants.noteCollection);
+    final user = FirebaseAuth.instance.currentUser;
+    try {
+      if (user != null) {
+        EasyLoading.show(status: 'Deleting Note!');
+        await noteCollection.doc(docID).delete();
 
         EasyLoading.dismiss();
         return true;

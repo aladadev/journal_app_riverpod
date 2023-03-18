@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_app/providers/auth_provider.dart';
 import 'package:journal_app/providers/firestore_provider.dart';
+import 'package:journal_app/providers/note_provider.dart';
 import 'package:journal_app/views/auth_views/registration_screen.dart';
 import 'package:journal_app/views/auth_views/widgets/widgets.dart';
 
@@ -33,6 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               password: _passwordController.text.trim())
           .then((value) {
         ref.invalidate(profileFromDatabase);
+        ref.invalidate(futureNoteProvider);
       });
     }
   }

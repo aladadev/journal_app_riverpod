@@ -1,19 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_app/models/note_model.dart';
+import 'package:journal_app/providers/note_provider.dart';
 
-class AddNewDialog extends StatefulWidget {
+class AddNewDialog extends ConsumerStatefulWidget {
   const AddNewDialog({
     super.key,
   });
 
   @override
-  State<AddNewDialog> createState() => _AddNewDialogState();
+  ConsumerState<AddNewDialog> createState() => _AddNewDialogState();
 }
 
-class _AddNewDialogState extends State<AddNewDialog> {
+class _AddNewDialogState extends ConsumerState<AddNewDialog> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  final currentUser = FirebaseAuth.instance.currentUser;
   @override
   void dispose() {
     titleController.dispose();
@@ -82,14 +86,24 @@ class _AddNewDialogState extends State<AddNewDialog> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextButton.icon(
-                          onPressed: () {
+                          onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               final newNote = NotelModel(
+                                noteDocID: currentUser!.uid +
+                                    DateTime.now()
+                                        .microsecondsSinceEpoch
+                                        .toString(),
+                                userID: currentUser!.uid,
                                 title: titleController.text.trim(),
                                 description: descriptionController.text.trim(),
                                 dateTime: DateTime.now(),
                               );
-                              Navigator.pop(context, newNote);
+
+                              await NoteProvider.addNewNote(newNote)
+                                  .then((value) {
+                                ref.invalidate(futureNoteProvider);
+                                Navigator.pop(context);
+                              });
                             }
                           },
                           icon: const Icon(Icons.add),

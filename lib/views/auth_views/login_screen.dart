@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:journal_app/models/profile_model.dart';
 import 'package:journal_app/providers/auth_provider.dart';
 import 'package:journal_app/providers/firestore_provider.dart';
 import 'package:journal_app/providers/note_provider.dart';
@@ -37,6 +38,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ref.invalidate(futureNoteProvider);
       });
     }
+  }
+
+  onLoginGoogle() async {
+    await AuthProvider.signInWithGoogle().then((user) async {
+      if (user != null) {
+        final ProfileModel profile = ProfileModel(
+          uid: user.uid,
+          name: user.displayName!,
+          email: user.email!,
+          password: user.refreshToken!,
+          date: DateTime.now(),
+        );
+        await FireStoreProvider.addNewUser(profile).then((value) {
+          if (value) {
+            ref.invalidate(profileFromDatabase);
+            ref.invalidate(futureNoteProvider);
+          }
+        });
+      }
+    });
   }
 
   @override
@@ -142,6 +163,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       onPressed: onLogin,
                       icon: const Icon(Icons.login_rounded),
                       label: const Text('Log In!'),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Text('Or Continue with'),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: GoogleandMobileSign(
+                        onGoogleTap: onLoginGoogle,
+                        onPhoneIconTap: () {
+                          print('phone sign in triggered!');
+                        },
+                      ),
                     ),
                     const SizedBox(
                       height: 32,

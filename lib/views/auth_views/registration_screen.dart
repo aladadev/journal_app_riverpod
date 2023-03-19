@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:journal_app/models/profile_model.dart';
 import 'package:journal_app/providers/auth_provider.dart';
 import 'package:journal_app/providers/firestore_provider.dart';
+import 'package:journal_app/providers/note_provider.dart';
 import 'package:journal_app/views/auth_views/widgets/widgets.dart';
 
 class RegistrationScreen extends ConsumerStatefulWidget {
@@ -60,6 +61,28 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
         }
       });
     }
+  }
+
+  //Google Login Button
+  onLoginGoogle() async {
+    await AuthProvider.signInWithGoogle().then((user) async {
+      if (user != null) {
+        final ProfileModel profile = ProfileModel(
+          uid: user.uid,
+          name: user.displayName!,
+          email: user.email!,
+          password: user.refreshToken!,
+          date: DateTime.now(),
+        );
+        await FireStoreProvider.addNewUser(profile).then((value) {
+          if (value) {
+            ref.invalidate(profileFromDatabase);
+            ref.invalidate(futureNoteProvider);
+            Navigator.pop(context);
+          }
+        });
+      }
+    });
   }
 
   @override
@@ -247,6 +270,23 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                       ),
                       const SizedBox(
                         height: 32,
+                      ),
+                      const Text('Or Continue with'),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: GoogleandMobileSign(
+                          onGoogleTap: onLoginGoogle,
+                          onPhoneIconTap: () {
+                            print('phone sign in triggered!');
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 16,
                       ),
                       AlreadyUserChecker(
                         firstString: 'Already an user? ',

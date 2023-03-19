@@ -29,3 +29,40 @@ class AlreadyUserChecker extends StatelessWidget {
     );
   }
 }
+
+class GoogleandMobileSign extends StatelessWidget {
+  const GoogleandMobileSign({
+    super.key,
+    this.onGoogleTap,
+    this.onPhoneIconTap,
+  });
+
+  final Function()? onGoogleTap;
+  final Function()? onPhoneIconTap;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        GestureDetector(
+          onTap: onGoogleTap,
+          child: Image.network(
+              'http://pngimg.com/uploads/google/google_PNG19635.png',
+              fit: BoxFit.cover),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        IconButton(
+          onPressed: onPhoneIconTap,
+          icon: const Icon(
+            Icons.phone_android_rounded,
+            size: 40,
+            color: Colors.greenAccent,
+          ),
+        ),
+      ],
+    );
+  }
+}
